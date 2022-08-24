@@ -13,6 +13,9 @@ type ContainerRequest struct {
 	// image to be pulled.
 	// Required value.
 	ImageName string `json:"image_name"`
+	// Env maps the environment variables.
+	// Optional.
+	Env map[string]string `json:"env"`
 	// Entrypoint - The container entry point.
 	// Optional.
 	Entrypoint []string `json:"entrypoint"`
