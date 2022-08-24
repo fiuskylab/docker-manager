@@ -49,19 +49,25 @@ func (c *Client) Create(cont *entity.Container) error {
 	return err
 }
 
-// Start - Starts a Docker Container
-func (c *Client) Start(cont *entity.Container) error {
+// DeleteContainer - Deletes a container
+func (c *Client) DeleteContainer(containerID string) error {
 	ctx := context.Background()
-	if err := c.conn.
-		ContainerStart(
-			ctx,
-			cont.ID,
-			types.ContainerStartOptions{},
-		); err != nil {
+	err := c.conn.ContainerRemove(ctx, containerID, types.ContainerRemoveOptions{})
+	if err != nil {
 		zap.L().Error(err.Error())
 	}
 
-	return nil
+	return err
+}
+
+// Inspect - will retrieve all data from a container.
+func (c *Client) Inspect(containerID string) (types.ContainerJSON, error) {
+	ctx := context.Background()
+	resp, err := c.conn.ContainerInspect(ctx, containerID)
+	if err != nil {
+		zap.L().Error(err.Error())
+	}
+	return resp, err
 }
 
 // RetrieveAll return all containers from the
@@ -109,12 +115,17 @@ func (c *Client) RetrieveAll() ([]entity.ContainerResponse, error) {
 	return list, nil
 }
 
-// Inspect - will retrieve all data from a container.
-func (c *Client) Inspect(containerID string) (types.ContainerJSON, error) {
+// Start - Starts a Docker Container
+func (c *Client) Start(cont *entity.Container) error {
 	ctx := context.Background()
-	resp, err := c.conn.ContainerInspect(ctx, containerID)
-	if err != nil {
+	if err := c.conn.
+		ContainerStart(
+			ctx,
+			cont.ID,
+			types.ContainerStartOptions{},
+		); err != nil {
 		zap.L().Error(err.Error())
 	}
-	return resp, err
+
+	return nil
 }
