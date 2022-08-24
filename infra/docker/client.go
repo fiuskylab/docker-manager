@@ -2,6 +2,7 @@ package docker
 
 import (
 	"context"
+	"strings"
 
 	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/client"
@@ -61,6 +62,51 @@ func (c *Client) Start(cont *entity.Container) error {
 	}
 
 	return nil
+}
+
+// RetrieveAll return all containers from the
+// current running Docker instance.
+func (c *Client) RetrieveAll() ([]entity.ContainerResponse, error) {
+	list := make([]entity.ContainerResponse, 10)
+
+	ctx := context.Background()
+	rawList, err := c.conn.ContainerList(ctx, types.ContainerListOptions{
+		All: true,
+	})
+	if err != nil {
+		zap.L().Error(err.Error())
+		return list, err
+	}
+
+	for _, l := range rawList {
+		name := ""
+		if len(l.Names) > 0 {
+			name = l.Names[0]
+		}
+		inspectData, err := c.Inspect(l.ID)
+		if err != nil {
+			return list, err
+		}
+		envMap := map[string]string{}
+		for _, data := range inspectData.Config.Env {
+			envKM := strings.Split(data, "=")
+			if len(envKM) == 1 {
+				envMap[envKM[0]] = ""
+				continue
+			}
+			envMap[envKM[0]] = envKM[1]
+		}
+		list = append(list, entity.ContainerResponse{
+			Name:       name,
+			ImageName:  l.Image,
+			Entrypoint: inspectData.Config.Entrypoint,
+			Env:        envMap,
+			ID:         l.ID,
+			Status:     inspectData.State.Status,
+		})
+	}
+
+	return list, nil
 }
 
 // Inspect - will retrieve all data from a container.
