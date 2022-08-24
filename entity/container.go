@@ -1,4 +1,4 @@
-package main
+package entity
 
 import (
 	"context"
@@ -9,13 +9,13 @@ import (
 
 	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/api/types/container"
-	"github.com/docker/docker/api/types/strslice"
 	"github.com/docker/docker/client"
 )
 
-func main() {
+func f() {
 	ctx := context.Background()
 	dockerClient, err := client.NewClientWithOpts(client.FromEnv, client.WithAPIVersionNegotiation())
+
 	if err != nil {
 		panic(err)
 	}
@@ -32,8 +32,7 @@ func main() {
 	io.Copy(os.Stdout, out)
 
 	resp, err := dockerClient.ContainerCreate(ctx, &container.Config{
-		Image:      imageName,
-		Entrypoint: strslice.StrSlice{},
+		Image: imageName,
 	}, nil, nil, nil, "")
 	if err != nil {
 		panic(err)
