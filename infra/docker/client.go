@@ -1,7 +1,11 @@
 package docker
 
 import (
+	"context"
+
+	"github.com/docker/docker/api/types/container"
 	"github.com/docker/docker/client"
+	"github.com/fiuskylab/docker-api/entity"
 	"go.uber.org/zap"
 )
 
@@ -20,3 +24,22 @@ func NewClient() (*Client, error) {
 	}
 	return c, nil
 }
+
+// Conn returns the current instance of Docker client.Client.
+func (c *Client) Conn() *client.Client { return c.conn }
+
+// Create - Creates a Docker Container
+func (c *Client) Create(cont *entity.Container) (container.ContainerCreateCreatedBody, error) {
+	ctx := context.Background()
+	return c.conn.ContainerCreate(
+		ctx,
+		cont.Config,
+		cont.HostConfig,
+		cont.NetworkingConfig,
+		cont.Platform,
+		cont.Name,
+	)
+}
+
+// Start - Starts a Docker Container
+func (c *Client) Start() error { return nil }
