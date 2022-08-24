@@ -62,3 +62,13 @@ func (c *Client) Start(cont *entity.Container) error {
 
 	return nil
 }
+
+// Inspect - will retrieve all data from a container.
+func (c *Client) Inspect(containerID string) (types.ContainerJSON, error) {
+	ctx := context.Background()
+	resp, err := c.conn.ContainerInspect(ctx, containerID)
+	if err != nil {
+		zap.L().Error(err.Error())
+	}
+	return resp, err
+}
