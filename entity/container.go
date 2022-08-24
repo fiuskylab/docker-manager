@@ -59,4 +59,5 @@ type Container struct {
 	NetworkingConfig *network.NetworkingConfig
 	Platform         *v1.Platform
 	Name             string
+	ID               string
 }
