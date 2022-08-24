@@ -2,10 +2,7 @@ module github.com/fiuskylab/docker-api
 
 go 1.19
 
-require (
-	github.com/docker/docker v20.10.17+incompatible
-	go.uber.org/zap v1.22.0
-)
+require github.com/docker/docker v20.10.17+incompatible
 
 require (
 	github.com/Microsoft/go-winio v0.5.2 // indirect
@@ -20,8 +17,6 @@ require (
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/sirupsen/logrus v1.9.0 // indirect
 	github.com/stretchr/testify v1.8.0 // indirect
-	go.uber.org/atomic v1.10.0 // indirect
-	go.uber.org/multierr v1.8.0 // indirect
 	golang.org/x/net v0.0.0-20201021035429-f5854403a974 // indirect
 	golang.org/x/sys v0.0.0-20220715151400-c0bba94af5f8 // indirect
 	golang.org/x/time v0.0.0-20220722155302-e5dcc9cfc0b9 // indirect
